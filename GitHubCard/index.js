@@ -1,8 +1,25 @@
+import "regenerator-runtime/runtime";
+import axios from "axios";
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+
+const getUserData = async (username) => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `https://api.github.com/users/${username}`,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const user = getUserData(`ncluff003`);
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +45,7 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [`tetondan`, `dustinmyers`, `justsml`, `luishrd`, `bigknell`];
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +66,64 @@ const followersArray = [];
       </div>
     </div>
 */
+
+async function createGitHubCard(userObj) {
+  const user = await userObj;
+
+  const userCard = document.createElement("div");
+  userCard.classList.add("card");
+
+  const userImage = document.createElement("img");
+  userImage.src = user.avatar_url;
+  userCard.appendChild(userImage);
+
+  const userInfo = document.createElement("div");
+  userInfo.classList.add("card-info");
+  userCard.appendChild(userInfo);
+
+  const userFullName = document.createElement("h3");
+  userFullName.classList.add("name");
+  userFullName.textContent = user.name;
+  userInfo.appendChild(userFullName);
+
+  const username = document.createElement("p");
+  username.classList.add("username");
+  username.textContent = user.login;
+  userInfo.appendChild(username);
+
+  const userLocation = document.createElement("p");
+  let location = user.location;
+  userLocation.textContent = `Location: ${location}`;
+  userInfo.appendChild(userLocation);
+
+  const userPageUrl = document.createElement("p");
+  userPageUrl.textContent = `Profile: `;
+  userInfo.appendChild(userPageUrl);
+
+  const userPageUrlLink = document.createElement("a");
+  userPageUrlLink.href = user.url;
+  userPageUrlLink.textContent = `${user.url}`;
+  userPageUrl.appendChild(userPageUrlLink);
+
+  const userFollowers = document.createElement("p");
+  userFollowers.textContent = `Followers: ${user.followers}`;
+  userInfo.appendChild(userFollowers);
+
+  const userFollowing = document.createElement("p");
+  userFollowing.textContent = `Following: ${user.following}`;
+  userInfo.appendChild(userFollowing);
+
+  const userBio = document.createElement("p");
+  userBio.textContent = `Bio: ${user.bio}`;
+  userInfo.appendChild(userBio);
+
+  const container = document.querySelector(".cards");
+
+  container.appendChild(userCard);
+}
+
+createGitHubCard(user);
+followersArray.forEach((follower) => createGitHubCard(getUserData(follower)));
 
 /*
   List of LS Instructors Github username's:
